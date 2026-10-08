@@ -1,1 +1,1 @@
-# kuzey-quai
+# index.html
