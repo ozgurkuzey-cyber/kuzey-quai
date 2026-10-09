@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#17243a">
+<title>KUZEY QUAI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f4f8;color:#182337;font-family:Arial,sans-serif}
+header{background:#17243a;color:white;padding:22px 16px}
+header h1{margin:0;font-size:25px;letter-spacing:1px}
+header p{margin:7px 0 0;color:#c8d6e9}
+main{max-width:700px;margin:auto;padding:15px}
+.card{background:white;border-radius:14px;padding:17px;margin-bottom:15px;box-shadow:0 2px 9px #0000000c}
+h2{font-size:18px;margin:0 0 15px}
+label{display:block;font-size:13px;font-weight:bold;margin:12px 0 6px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd4df;border-radius:8px;font-size:16px;background:white}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{border:0;border-radius:9px;padding:13px;font-size:15px;font-weight:bold;cursor:pointer}
+.primary{background:#17243a;color:white;width:100%;margin-top:15px}
+.secondary{background:#e7edf5;color:#17243a}
+.item{border:1px solid #dce3ed;border-radius:10px;padding:13px;margin-top:10px}
+.item strong{font-size:16px}
+.item p{margin:6px 0;font-size:14px;line-height:1.5}
+.status{font-weight:bold;color:#b36b00}
+.empty{text-align:center;color:#68768a;padding:15px}
+.actions{display:flex;gap:8px;margin-top:10px}
+.actions button{flex:1}
+.delete{background:#ffeded;color:#a32b2b}
+footer{text-align:center;padding:20px;color:#6b7788;font-size:12px}
+@media(max-width:380px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>KUZEY QUAI</h1>
+<p>Gestion des rendez-vous transport</p>
+</header>
+<main>
+<section class="card">
+<h2>＋ Nouveau rendez-vous</h2>
+<form id="bookingForm">
+<div class="grid">
+<div><label for="date">Date</label><input id="date" type="date" required></div>
+<div><label for="time">Heure</label><input id="time" type="time" required></div>
+</div>
+<label for="customer">Client</label>
+<input id="customer" required placeholder="Nom du client">
+<label for="carrier">Transporteur</label>
+<input id="carrier" placeholder="Nom du transporteur">
+<div class="grid">
+<div><label for="plate">Immatriculation</label><input id="plate" placeholder="AB-123-CD"></div>
+<div><label for="pallets">Nombre de palettes</label><input id="pallets" type="number" min="0" value="0" required></div>
+</div>
+<label for="quai">Quai</label>
+<select id="quai">
+<option>Quai 1</option><option>Quai 2</option>
+<option>Quai 3</option><option>Quai 4</option>
+<option>Quai 5</option>
+</select>
+<label for="status">Statut</label>
+<select id="status">
+<option>Prévu</option><option>Arrivé</option>
+<option>En chargement</option><option>Terminé</option>
+<option>Annulé</option>
+</select>
+<label for="notes">Notes</label>
+<textarea id="notes" rows="2" placeholder="Informations complémentaires"></textarea>
+<button class="primary" type="submit">Enregistrer le rendez-vous</button>
+</form>
+</section>
+<section class="card">
+<h2>Liste des rendez-vous</h2>
+<input id="search" placeholder="Rechercher un client, une plaque..." style="margin-bottom:10px">
+<div class="grid">
+<div><label for="filterDate">Filtrer par date</label><input id="filterDate" type="date"></div>
+<div><label for="filterQuai">Filtrer par quai</label>
+<select id="filterQuai"><option value="">Tous les quais</option>
+<option>Quai 1</option><option>Quai 2</option><option>Quai 3</option><option>Quai 4</option><option>Quai 5</option>
+</select></div>
+</div>
+<div id="list"></div>
+<button class="secondary" id="export" type="button" style="width:100%;margin-top:12px">Exporter en CSV</button>
+</section>
+</main>
+<footer>KUZEY QUAI · Gestion logistique</footer>
+<script>
+const $=id=>document.getElementById(id);
+const KEY="kuzey-quai-bookings-v1";
+let bookings=[];
+try{bookings=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){bookings=[]}
+$("date").value=new Date().toLocaleDateString("en-CA");
+function save(){localStorage.setItem(KEY,JSON.stringify(bookings));render()}
+$("bookingForm").addEventListener("submit",e=>{
+e.preventDefault();
+bookings.push({
+id:Date.now(),date:$("date").value,time:$("time").value,
+customer:$("customer").value.trim(),carrier:$("carrier").value.trim(),
+plate:$("plate").value.trim(),pallets:$("pallets").value,
+quai:$("quai").value,status:$("status").value,notes:$("notes").value.trim()
+});
+save();e.target.reset();$("date").value=new Date().toLocaleDateString("en-CA");
+$("pallets").value=0;
+});
+function render(){
+const q=$("search").value.toLowerCase();
+const d=$("filterDate").value, quai=$("filterQuai").value;
+const items=bookings.filter(b=>
+(b.customer+" "+b.carrier+" "+b.plate).toLowerCase().includes(q)&&
+(!d||b.date===d)&&(!quai||b.quai===quai)
+).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+$("list").innerHTML="";
+if(!items.length){$("list").innerHTML='<div class="empty">Aucun rendez-vous pour le moment.</div>';return}
+items.forEach(b=>{
+const el=document.createElement("div");el.className="item";
+const title=document.createElement("strong");title.textContent=b.customer;
+const info=document.createElement("p");
+info.textContent=b.date+" à "+b.time+" · "+b.quai+" · "+b.pallets+" palettes";
+const extra=document.createElement("p");
+extra.textContent="Transporteur : "+(b.carrier||"—")+" | Plaque : "+(b.plate||"—");
+const st=document.createElement("p");st.className="status";st.textContent=b.status;
+el.append(title,info,extra,st);
+if(b.notes){const n=document.createElement("p");n.textContent="Note : "+b.notes;el.append(n)}
+const actions=document.createElement("div");actions.className="actions";
+const edit=document.createElement("button");edit.className="secondary";edit.textContent="Modifier";
+edit.onclick=()=>{
+$("date").value=b.date;$("time").value=b.time;$("customer").value=b.customer;
+$("carrier").value=b.carrier;$("plate").value=b.plate;$("pallets").value=b.pallets;
+$("quai").value=b.quai;$("status").value=b.status;$("notes").value=b.notes;
+bookings=bookings.filter(x=>x.id!==b.id);save();
+window.scrollTo({top:0,behavior:"smooth"});
+};
+const del=document.createElement("button");del.className="delete";del.textContent="Supprimer";
+del.onclick=()=>{if(confirm("Supprimer ce rendez-vous ?")){bookings=bookings.filter(x=>x.id!==b.id);save()}};
+actions.append(edit,del);el.append(actions);$("list").append(el);
+});
+}
+["search","filterDate","filterQuai"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",render));
+$("export").onclick=()=>{
+const cols=["date","time","customer","carrier","plate","pallets","quai","status","notes"];
+const csv=[cols.join(";"),...bookings.map(b=>cols.map(k=>'"'+String(b[k]??"").replace(/"/g,'""')+'"').join(";"))].join("\r\n");
+const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+const url=URL.createObjectURL(blob),a=document.createElement("a");
+a.href=url;a.download="kuzey-quai-rendez-vous.csv";a.click();URL.revokeObjectURL(url);
+};
+render();
+</script>
+</body>
+</html>
