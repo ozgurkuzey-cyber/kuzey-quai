@@ -94,6 +94,9 @@ footer{text-align:center;padding:20px;color:#6b7788;font-size:12px}
 </main>
 <footer>KUZEY QUAI · Gestion logistique</footer>
 <script>
+const SUPABASE_URL = "https://vlrygdrzwnjxkbarjcun.supabase.co";
+const SUPABASE_KEY = "sb_publishable_RG-WBKfSxNk7oKr0DircGQ_d1TRwIQb";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const KEY="kuzey-quai-bookings-v1";
 let bookings=[];
