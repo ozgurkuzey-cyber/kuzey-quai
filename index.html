@@ -126,6 +126,10 @@ supabase.from("rendez_vous").insert({
   if(error) alert("Erreur Supabase : "+error.message);
 });
 save();
+e.target.reset();
+$("date").value=new Date().toLocaleDateString("en-CA");
+$("pallets").value=0;
+});
 function render(){
 const q=$("search").value.toLowerCase();
 const d=$("filterDate").value, quai=$("filterQuai").value;
