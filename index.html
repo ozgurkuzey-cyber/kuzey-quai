@@ -111,9 +111,21 @@ customer:$("customer").value.trim(),carrier:$("carrier").value.trim(),
 plate:$("plate").value.trim(),pallets:$("pallets").value,
 quai:$("quai").value,status:$("status").value,notes:$("notes").value.trim()
 });
-save();e.target.reset();$("date").value=new Date().toLocaleDateString("en-CA");
-$("pallets").value=0;
+const b=bookings[bookings.length-1];
+supabase.from("rendez_vous").insert({
+  date:b.date,
+  time:b.time,
+  customer:b.customer,
+  carrier:b.carrier,
+  plate:b.plate,
+  palettes:Number(b.pallets),
+  quai:b.quai,
+  status:b.status,
+  notes:b.notes
+}).then(({error})=>{
+  if(error) alert("Erreur Supabase : "+error.message);
 });
+save();
 function render(){
 const q=$("search").value.toLowerCase();
 const d=$("filterDate").value, quai=$("filterQuai").value;
