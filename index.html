@@ -96,7 +96,7 @@ footer{text-align:center;padding:20px;color:#6b7788;font-size:12px}
 <script>
 const SUPABASE_URL = "https://vlrygdrzwnjxkbarjcun.supabase.co";
 const SUPABASE_KEY = "sb_publishable_RG-WBKfSxNk7oKr0DircGQ_d1TRwIQb";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const KEY="kuzey-quai-bookings-v1";
 let bookings=[];
@@ -112,7 +112,7 @@ plate:$("plate").value.trim(),pallets:$("pallets").value,
 quai:$("quai").value,status:$("status").value,notes:$("notes").value.trim()
 });
 const b=bookings[bookings.length-1];
-supabase.from("rendez_vous").insert({
+window.supabaseClient.from("rendez_vous").insert({
   date:b.date,
   time:b.time,
   customer:b.customer,
@@ -264,7 +264,7 @@ link.addEventListener("click",async function(){
       msg.textContent="Saisissez d'abord votre adresse e-mail.";
       return;
     }
-    const {error}=await supabase.auth.resetPasswordForEmail(email,{
+    const {error}=await window.supabaseClient.auth.resetPasswordForEmail(email,{
       redirectTo:"https://ozgurkuzey-cyber.github.io/kuzey-quai/"
     });
     if(error){
