@@ -235,7 +235,6 @@ render();
     panel.style.display="flex";
     document.getElementById("loginPanel").style.display="none";
   }
-
   form.addEventListener("submit",async function(e){
     e.preventDefault();
     message.textContent="Enregistrement...";
@@ -250,25 +249,35 @@ render();
       history.replaceState(null,"",location.pathname);
     }
   });
-
   const link=document.createElement("button");
   link.type="button";
   link.textContent="Mot de passe oublié ?";
   link.style="display:block;margin:16px auto 0;background:none;border:0;color:#0b2d50;text-decoration:underline;";
   document.getElementById("loginForm").appendChild(link);
-
-  link.addEventListener("click",async function(){
-    const email=document.getElementById("loginEmail").value.trim();
+link.addEventListener("click",async function(){
+  const email=document.getElementById("loginEmail").value.trim();
+  const msg=document.getElementById("loginMessage");
+  link.disabled=true;
+  msg.textContent="Envoi en cours...";
+  try{
     if(!email){
-      document.getElementById("loginMessage").textContent="Saisissez d'abord votre adresse e-mail.";
+      msg.textContent="Saisissez d'abord votre adresse e-mail.";
       return;
     }
     const {error}=await supabase.auth.resetPasswordForEmail(email,{
       redirectTo:"https://ozgurkuzey-cyber.github.io/kuzey-quai/"
     });
-    document.getElementById("loginMessage").textContent=error
-      ?"Erreur d'envoi. Vérifiez l'adresse e-mail."
-      :"Consultez votre boîte e-mail pour réinitialiser le mot de passe.";
+    if(error){
+      msg.textContent="Erreur : "+error.message;
+    }else{
+      msg.textContent="E-mail envoyé. Vérifiez votre boîte de réception et vos courriers indésirables.";
+    }
+  }catch(err){
+    msg.textContent="Erreur : "+err.message;
+  }finally{
+    link.disabled=false;
+  }
+});
   });
 })();
 </script>
