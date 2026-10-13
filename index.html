@@ -173,5 +173,46 @@ a.href=url;a.download="kuzey-quai-rendez-vous.csv";a.click();URL.revokeObjectURL
 };
 render();
 </script>
+  <div id="loginPanel" style="position:fixed;inset:0;z-index:99999;background:#0b2d50;display:flex;align-items:center;justify-content:center;padding:24px;">
+  <form id="loginForm" style="background:white;padding:24px;border-radius:16px;width:100%;max-width:360px;box-sizing:border-box;font-family:Arial,sans-serif;">
+    <h2 style="color:#0b2d50;text-align:center;">KUZEY QUAI</h2>
+    <p style="text-align:center;">Connexion</p>
+    <label for="loginEmail">Adresse e-mail</label>
+    <input id="loginEmail" type="email" required autocomplete="username" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;">
+    <label for="loginPassword">Mot de passe</label>
+    <input id="loginPassword" type="password" required autocomplete="current-password" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;">
+    <button id="loginButton" type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:8px;">Se connecter</button>
+    <p id="loginMessage" style="color:#b00020;"></p>
+  </form>
+</div>
+<script>
+(async function(){
+  const panel=document.getElementById("loginPanel");
+  const form=document.getElementById("loginForm");
+  const message=document.getElementById("loginMessage");
+  const button=document.getElementById("loginButton");
+
+  const {data,error}=await supabase.auth.getSession();
+  if(!error && data.session) panel.style.display="none";
+
+  form.addEventListener("submit",async function(e){
+    e.preventDefault();
+    button.disabled=true;
+    button.textContent="Connexion...";
+    message.textContent="";
+    const {error}=await supabase.auth.signInWithPassword({
+      email:document.getElementById("loginEmail").value.trim(),
+      password:document.getElementById("loginPassword").value
+    });
+    button.disabled=false;
+    button.textContent="Se connecter";
+    if(error){
+      message.textContent="Échec de connexion. Vérifiez l’e-mail et le mot de passe.";
+    }else{
+      panel.style.display="none";
+    }
+  });
+})();
+</script>
 </body>
 </html>
