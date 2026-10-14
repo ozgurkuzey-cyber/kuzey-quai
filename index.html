@@ -242,8 +242,7 @@ render();
     const password=document.getElementById("newPassword").value;
     const {error}=await window.supabaseClient.auth.updateUser({password});
     if(error){
-      message.textContent="Erreur. Demandez un nouveau lien de réinitialisation.";
-    }else{
+      message.textContent="Erreur : "+error.message;
       message.textContent="Mot de passe modifié. Vous pouvez vous connecter.";
       panel.style.display="none";
       document.getElementById("loginPanel").style.display="flex";
