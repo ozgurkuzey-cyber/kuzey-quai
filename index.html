@@ -193,7 +193,7 @@ render();
   const message=document.getElementById("loginMessage");
   const button=document.getElementById("loginButton");
 
-  const {data,error}=await supabase.auth.getSession();
+  const {data,error}=await window.supabaseClient.auth.getSession();
   if(!error && data.session) panel.style.display="none";
 
   form.addEventListener("submit",async function(e){
@@ -201,7 +201,7 @@ render();
     button.disabled=true;
     button.textContent="Connexion...";
     message.textContent="";
-    const {error}=await supabase.auth.signInWithPassword({
+   const {error}=await window.supabaseClient.auth.signInWithPassword({
       email:document.getElementById("loginEmail").value.trim(),
       password:document.getElementById("loginPassword").value
     });
