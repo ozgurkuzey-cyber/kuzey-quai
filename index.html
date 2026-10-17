@@ -395,6 +395,106 @@ render();
 
   loginForm.addEventListener("submit", async function (event) {
     event.preventDefault();
+<div id="loginPanel" style="position:fixed;inset:0;z-index:99999;background:#0b2d50;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <form id="loginForm" style="width:100%;max-width:380px;background:white;padding:28px;border-radius:14px;box-sizing:border-box;font-family:Arial,sans-serif;">
+    <h2 style="text-align:center;color:#0b2d50;">KUZEY QUAI</h2>
+    <p style="text-align:center;">Gestion des rendez-vous transport</p>
+
+    <label for="loginEmail">Adresse e-mail</label>
+    <input id="loginEmail" type="email" required autocomplete="username" style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;border:1px solid #bbb;border-radius:6px;">
+
+    <label for="loginPassword">Mot de passe</label>
+    <input id="loginPassword" type="password" required autocomplete="current-password" style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;border:1px solid #bbb;border-radius:6px;">
+
+    <button id="loginButton" type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:6px;">Se connecter</button>
+
+    <button id="forgotPasswordButton" type="button" style="display:block;margin:16px auto 0;background:none;border:0;color:#0b2d50;text-decoration:underline;font-size:14px;">Mot de passe oublié ?</button>
+
+    <p id="loginMessage" role="status" style="color:#b00020;overflow-wrap:anywhere;"></p>
+  </form>
+</div>
+
+<div id="passwordResetPanel" style="position:fixed;inset:0;z-index:100000;background:#f1f4f8;display:none;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <form id="passwordResetForm" style="width:100%;max-width:380px;background:white;padding:28px;border-radius:14px;box-sizing:border-box;font-family:Arial,sans-serif;">
+    <h2 style="text-align:center;color:#0b2d50;">KUZEY QUAI</h2>
+    <h3>Créer un nouveau mot de passe</h3>
+
+    <label for="newPassword">Nouveau mot de passe (8 caractères minimum)</label>
+    <input id="newPassword" type="password" required minlength="8" autocomplete="new-password" style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;border:1px solid #bbb;border-radius:6px;">
+
+    <button type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:6px;">Enregistrer le nouveau mot de passe</button>
+
+    <p id="resetMessage" role="status" style="overflow-wrap:anywhere;"></p>
+  </form>
+</div>
+
+<script>
+(function () {
+  const client = window.supabaseClient;
+
+  const loginPanel = document.getElementById("loginPanel");
+  const loginForm = document.getElementById("loginForm");
+  const loginButton = document.getElementById("loginButton");
+  const loginMessage = document.getElementById("loginMessage");
+  const forgotButton = document.getElementById("forgotPasswordButton");
+
+  const resetPanel = document.getElementById("passwordResetPanel");
+  const resetForm = document.getElementById("passwordResetForm");
+  const resetMessage = document.getElementById("resetMessage");
+
+  if (!client || !client.auth) {
+    loginMessage.textContent =
+      "Erreur de connexion au service. Rechargez la page.";
+    return;
+  }
+
+  function showResetPanel() {
+    loginPanel.style.display = "none";
+    resetPanel.style.display = "flex";
+  }
+
+  function showLoginPanel(message) {
+    resetPanel.style.display = "none";
+    loginPanel.style.display = "flex";
+    loginMessage.textContent = message || "";
+  }
+
+  const hashParams = new URLSearchParams(
+    window.location.hash.substring(1)
+  );
+  const queryParams = new URLSearchParams(
+    window.location.search
+  );
+
+  const isRecovery =
+    hashParams.get("type") === "recovery" ||
+    queryParams.get("type") === "recovery";
+
+  if (isRecovery) {
+    showResetPanel();
+  }
+
+  client.auth.onAuthStateChange(function (event, session) {
+    if (event === "PASSWORD_RECOVERY") {
+      showResetPanel();
+    }
+
+    if (event === "SIGNED_IN" && session && !isRecovery) {
+      loginPanel.style.display = "none";
+      resetPanel.style.display = "none";
+    }
+  });
+
+  client.auth.getSession().then(function (result) {
+    if (result.error) return;
+
+    if (result.data.session && !isRecovery) {
+      loginPanel.style.display = "none";
+    }
+  });
+
+  loginForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
     loginButton.disabled = true;
     loginButton.textContent = "Connexion...";
