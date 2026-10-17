@@ -214,17 +214,112 @@ render();
     }
   });
 })();
-</script>
-<div id="passwordResetPanel" style="display:none;position:fixed;inset:0;z-index:100000;background:#0b2d50;align-items:center;justify-content:center;padding:24px;">
-  <form id="passwordResetForm" style="background:white;padding:24px;border-radius:16px;width:100%;max-width:360px;box-sizing:border-box;font-family:Arial,sans-serif;">
-    <h2 style="color:#0b2d50;text-align:center;">KUZEY QUAI</h2>
-    <p>Nouveau mot de passe</p>
-    <input id="newPassword" type="password" minlength="8" required autocomplete="new-password" placeholder="Nouveau mot de passe" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:12px 0;">
-    <button type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:8px;">Enregistrer le mot de passe</button>
-    <p id="resetMessage"></p>
-  </form>
-</div>
+
 <script>
+(async function(){
+  const supabase = window.supabaseClient;
+  const panel = document.getElementById("passwordResetPanel");
+  const form = document.getElementById("passwordResetForm");
+  const message = document.getElementById("resetMessage");
+  const loginPanel = document.getElementById("loginPanel");
+
+  function showResetPanel(){
+    panel.style.display = "flex";
+    loginPanel.style.display = "none";
+  }
+
+  const hash = new URLSearchParams(location.hash.slice(1));
+  const query = new URLSearchParams(location.search);
+
+  if (
+    hash.get("type") === "recovery" ||
+    query.get("type") === "recovery"
+  ) {
+    showResetPanel();
+  }
+
+  supabase.auth.onAuthStateChange(function(event){
+    if(event === "PASSWORD_RECOVERY"){
+      showResetPanel();
+    }
+  });
+
+  form.addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    const password = document.getElementById("newPassword").value;
+    const saveButton = form.querySelector('button[type="submit"]');
+
+    saveButton.disabled = true;
+    message.textContent = "Enregistrement...";
+
+    try {
+      const {error} = await supabase.auth.updateUser({
+        password: password
+      });
+
+      if(error){
+        message.textContent = "Erreur : " + error.message;
+        return;
+      }
+
+      message.textContent = "Mot de passe modifié avec succès.";
+
+      await supabase.auth.signOut();
+
+      panel.style.display = "none";
+      loginPanel.style.display = "flex";
+      history.replaceState(null, "", location.pathname);
+
+      document.getElementById("loginMessage").textContent =
+        "Connectez-vous avec votre nouveau mot de passe.";
+
+    } catch(err) {
+      message.textContent = "Erreur : " + err.message;
+    } finally {
+      saveButton.disabled = false;
+    }
+  });
+
+  const link = document.createElement("button");
+  link.type = "button";
+  link.textContent = "Mot de passe oublié ?";
+  link.style = "display:block;margin:16px auto 0;background:none;border:0;color:#0b2d50;text-decoration:underline;";
+
+  document.getElementById("loginForm").appendChild(link);
+
+  link.addEventListener("click", async function(){
+    const email = document.getElementById("loginEmail").value.trim();
+    const msg = document.getElementById("loginMessage");
+
+    if(!email){
+      msg.textContent = "Saisissez d'abord votre adresse e-mail.";
+      return;
+    }
+
+    link.disabled = true;
+    msg.textContent = "Envoi en cours...";
+
+    try {
+      const {error} = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: "https://ozgurkuzey-cyber.github.io/kuzey-quai/"
+      });
+
+      if(error){
+        msg.textContent = "Erreur : " + error.message;
+      } else {
+        msg.textContent =
+          "E-mail envoyé. Vérifiez votre boîte de réception et vos courriers indésirables.";
+      }
+    } catch(err) {
+      msg.textContent = "Erreur : " + err.message;
+    } finally {
+      link.disabled = false;
+    }
+  });
+})();
+</script>
+
 (async function(){
   const panel=document.getElementById("passwordResetPanel");
   const form=document.getElementById("passwordResetForm");
