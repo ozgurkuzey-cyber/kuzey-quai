@@ -242,136 +242,167 @@ render();
     if(event === "PASSWORD_RECOVERY"){
       showResetPanel();
     }
-  });
 
-  form.addEventListener("submit", async function(e){
-    e.preventDefault();
+<div id="loginPanel" style="position:fixed;inset:0;z-index:9999;background:#f1f4f8;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <form id="loginForm" style="width:100%;max-width:380px;background:white;padding:28px;border-radius:14px;box-shadow:0 4px 20px #0002;box-sizing:border-box;">
+    <h2 style="text-align:center;color:#0b2d50;margin-top:0;">KUZEY QUAI</h2>
+    <p style="text-align:center;color:#555;">Gestion des rendez-vous transport</p>
+    <label for="loginEmail">Adresse e-mail</label>
+    <input id="loginEmail" type="email" required autocomplete="username" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border:1px solid #bbb;border-radius:6px;">
+    <label for="loginPassword">Mot de passe</label>
+    <input id="loginPassword" type="password" required autocomplete="current-password" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border:1px solid #bbb;border-radius:6px;">
+    <button id="loginButton" type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:6px;font-size:16px;">Se connecter</button>
+    <button id="forgotPasswordButton" type="button" style="display:block;margin:16px auto 0;background:none;border:0;color:#0b2d50;text-decoration:underline;font-size:14px;">Mot de passe oublié ?</button>
+    <p id="loginMessage" role="status" style="color:#b42318;overflow-wrap:anywhere;"></p>
+  </form>
+</div>
 
-    const password = document.getElementById("newPassword").value;
-    const saveButton = form.querySelector('button[type="submit"]');
+<div id="passwordResetPanel" style="position:fixed;inset:0;z-index:10000;background:#f1f4f8;display:none;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
+  <form id="passwordResetForm" style="width:100%;max-width:380px;background:white;padding:28px;border-radius:14px;box-shadow:0 4px 20px #0002;box-sizing:border-box;">
+    <h2 style="text-align:center;color:#0b2d50;margin-top:0;">KUZEY QUAI</h2>
+    <h3>Créer un nouveau mot de passe</h3>
+    <label for="newPassword">Nouveau mot de passe (8 caractères minimum)</label>
+    <input id="newPassword" type="password" required minlength="8" autocomplete="new-password" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border:1px solid #bbb;border-radius:6px;">
+    <button type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:6px;font-size:16px;">Enregistrer le nouveau mot de passe</button>
+    <p id="resetMessage" role="status" style="overflow-wrap:anywhere;"></p>
+  </form>
+</div>
 
-    saveButton.disabled = true;
-    message.textContent = "Enregistrement...";
+<script>
+(function () {
+  const client = window.supabaseClient;
+  const loginPanel = document.getElementById("loginPanel");
+  const loginForm = document.getElementById("loginForm");
+  const loginButton = document.getElementById("loginButton");
+  const loginMessage = document.getElementById("loginMessage");
+  const forgotButton = document.getElementById("forgotPasswordButton");
+  const resetPanel = document.getElementById("passwordResetPanel");
+  const resetForm = document.getElementById("passwordResetForm");
+  const resetMessage = document.getElementById("resetMessage");
 
-    try {
-      const {error} = await supabase.auth.updateUser({
-        password: password
-      });
+  if (!client) {
+    loginMessage.textContent = "Erreur de connexion au service. Rechargez la page.";
+    return;
+  }
 
-      if(error){
-        message.textContent = "Erreur : " + error.message;
-        return;
-      }
+  function showResetPanel() {
+    resetPanel.style.display = "flex";
+    loginPanel.style.display = "none";
+  }
 
-      message.textContent = "Mot de passe modifié avec succès.";
+  function showLoginPanel(message) {
+    resetPanel.style.display = "none";
+    loginPanel.style.display = "flex";
+    loginMessage.textContent = message || "";
+  }
 
-      await supabase.auth.signOut();
+  const hashParams = new URLSearchParams(window.location.hash.substring(1));
+  const queryParams = new URLSearchParams(window.location.search);
 
-      panel.style.display = "none";
-      loginPanel.style.display = "flex";
-      history.replaceState(null, "", location.pathname);
+  if (
+    hashParams.get("type") === "recovery" ||
+    queryParams.get("type") === "recovery"
+  ) {
+    showResetPanel();
+  }
 
-      document.getElementById("loginMessage").textContent =
-        "Connectez-vous avec votre nouveau mot de passe.";
-
-    } catch(err) {
-      message.textContent = "Erreur : " + err.message;
-    } finally {
-      saveButton.disabled = false;
+  client.auth.onAuthStateChange(function (event, session) {
+    if (event === "PASSWORD_RECOVERY") {
+      showResetPanel();
+    } else if (event === "SIGNED_IN" && session) {
+      loginPanel.style.display = "none";
+      resetPanel.style.display = "none";
     }
   });
 
-  const link = document.createElement("button");
-  link.type = "button";
-  link.textContent = "Mot de passe oublié ?";
-  link.style = "display:block;margin:16px auto 0;background:none;border:0;color:#0b2d50;text-decoration:underline;";
+  client.auth.getSession().then(function (result) {
+    if (result.data && result.data.session) {
+      const type = new URLSearchParams(window.location.hash.substring(1)).get("type");
+      if (type !== "recovery") {
+        loginPanel.style.display = "none";
+      }
+    }
+  });
 
-  document.getElementById("loginForm").appendChild(link);
+  loginForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    loginButton.disabled = true;
+    loginButton.textContent = "Connexion...";
+    loginMessage.textContent = "";
 
-  link.addEventListener("click", async function(){
+    try {
+      const result = await client.auth.signInWithPassword({
+        email: document.getElementById("loginEmail").value.trim(),
+        password: document.getElementById("loginPassword").value
+      });
+
+      if (result.error) {
+        loginMessage.textContent = "Échec de connexion. Vérifiez l’e-mail et le mot de passe.";
+      } else {
+        loginPanel.style.display = "none";
+      }
+    } catch (error) {
+      loginMessage.textContent = "Erreur : " + error.message;
+    } finally {
+      loginButton.disabled = false;
+      loginButton.textContent = "Se connecter";
+    }
+  });
+
+  forgotButton.addEventListener("click", async function () {
     const email = document.getElementById("loginEmail").value.trim();
-    const msg = document.getElementById("loginMessage");
 
-    if(!email){
-      msg.textContent = "Saisissez d'abord votre adresse e-mail.";
+    if (!email) {
+      loginMessage.textContent = "Saisissez d'abord votre adresse e-mail.";
+      document.getElementById("loginEmail").focus();
       return;
     }
 
-    link.disabled = true;
-    msg.textContent = "Envoi en cours...";
+    forgotButton.disabled = true;
+    loginMessage.textContent = "Envoi en cours...";
 
     try {
-      const {error} = await supabase.auth.resetPasswordForEmail(email, {
+      const result = await client.auth.resetPasswordForEmail(email, {
         redirectTo: "https://ozgurkuzey-cyber.github.io/kuzey-quai/"
       });
 
-      if(error){
-        msg.textContent = "Erreur : " + error.message;
+      if (result.error) {
+        loginMessage.textContent = "Erreur : " + result.error.message;
       } else {
-        msg.textContent =
-          "E-mail envoyé. Vérifiez votre boîte de réception et vos courriers indésirables.";
+        loginMessage.textContent = "E-mail envoyé. Vérifiez votre boîte de réception et vos courriers indésirables.";
       }
-    } catch(err) {
-      msg.textContent = "Erreur : " + err.message;
+    } catch (error) {
+      loginMessage.textContent = "Erreur : " + error.message;
     } finally {
-      link.disabled = false;
+      forgotButton.disabled = false;
     }
   });
-})();
-</script>
 
-(async function(){
-  const panel=document.getElementById("passwordResetPanel");
-  const form=document.getElementById("passwordResetForm");
-  const message=document.getElementById("resetMessage");
-  const hash=new URLSearchParams(location.hash.slice(1));
-  const query=new URLSearchParams(location.search);
+  resetForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-  if(hash.get("type")==="recovery" || query.get("type")==="recovery"){
-    panel.style.display="flex";
-    document.getElementById("loginPanel").style.display="none";
-  }
-  form.addEventListener("submit",async function(e){
-    e.preventDefault();
-    message.textContent="Enregistrement...";
-    const password=document.getElementById("newPassword").value;
-    const {error}=await window.supabaseClient.auth.updateUser({password});
-    if(error){
-      message.textContent="Erreur : "+error.message;
-      message.textContent="Mot de passe modifié. Vous pouvez vous connecter.";
-      panel.style.display="none";
-      document.getElementById("loginPanel").style.display="flex";
-      history.replaceState(null,"",location.pathname);
+    const password = document.getElementById("newPassword").value;
+    const saveButton = resetForm.querySelector('button[type="submit"]');
+
+    saveButton.disabled = true;
+    resetMessage.textContent = "Enregistrement en cours...";
+
+    try {
+      const result = await client.auth.updateUser({ password: password });
+
+      if (result.error) {
+        resetMessage.textContent = "Erreur : " + result.error.message;
+        return;
+      }
+
+      await client.auth.signOut();
+      window.history.replaceState(null, "", window.location.pathname);
+      showLoginPanel("Mot de passe modifié. Connectez-vous avec votre nouveau mot de passe.");
+    } catch (error) {
+      resetMessage.textContent = "Erreur : " + error.message;
+    } finally {
+      saveButton.disabled = false;
     }
-  });
-  const link=document.createElement("button");
-  link.type="button";
-  link.textContent="Mot de passe oublié ?";
-  link.style="display:block;margin:16px auto 0;background:none;border:0;color:#0b2d50;text-decoration:underline;";
-  document.getElementById("loginForm").appendChild(link);
-link.addEventListener("click",async function(){
-  const email=document.getElementById("loginEmail").value.trim();
-  const msg=document.getElementById("loginMessage");
-  link.disabled=true;
-  msg.textContent="Envoi en cours...";
-  try{
-    if(!email){
-      msg.textContent="Saisissez d'abord votre adresse e-mail.";
-      return;
-    }
-    const {error}=await window.supabaseClient.auth.resetPasswordForEmail(email,{
-      redirectTo:"https://ozgurkuzey-cyber.github.io/kuzey-quai/"
-    });
-    if(error){
-      msg.textContent="Erreur : "+error.message;
-    }else{
-      msg.textContent="E-mail envoyé. Vérifiez votre boîte de réception et vos courriers indésirables.";
-    }
-  }catch(err){
-    msg.textContent="Erreur : "+err.message;
-  }finally{
-    link.disabled=false;
-  }
   });
 })();
 </script>
