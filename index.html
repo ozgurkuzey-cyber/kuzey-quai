@@ -1,498 +1,507 @@
 
 <!DOCTYPE html>
 <html lang="fr">
-<head>  
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#0b2d50">
-<link rel="icon" type="image/png" href="./icon-192.png">
-<link rel="apple-touch-icon" href="./icon-192.png">
-<link rel="icon" sizes="512x512" type="image/png" href="./icon-512.png">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#17243a">
-<title>KUZEY QUAI</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#f1f4f8;color:#182337;font-family:Arial,sans-serif}
-header{background:#17243a;color:white;padding:22px 16px}
-header h1{margin:0;font-size:25px;letter-spacing:1px}
-header p{margin:7px 0 0;color:#c8d6e9}
-main{max-width:700px;margin:auto;padding:15px}
-.card{background:white;border-radius:14px;padding:17px;margin-bottom:15px;box-shadow:0 2px 9px #0000000c}
-h2{font-size:18px;margin:0 0 15px}
-label{display:block;font-size:13px;font-weight:bold;margin:12px 0 6px}
-input,select,textarea{width:100%;padding:12px;border:1px solid #ccd4df;border-radius:8px;font-size:16px;background:white}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-button{border:0;border-radius:9px;padding:13px;font-size:15px;font-weight:bold;cursor:pointer}
-.primary{background:#17243a;color:white;width:100%;margin-top:15px}
-.secondary{background:#e7edf5;color:#17243a}
-.item{border:1px solid #dce3ed;border-radius:10px;padding:13px;margin-top:10px}
-.item strong{font-size:16px}
-.item p{margin:6px 0;font-size:14px;line-height:1.5}
-.status{font-weight:bold;color:#b36b00}
-.empty{text-align:center;color:#68768a;padding:15px}
-.actions{display:flex;gap:8px;margin-top:10px}
-.actions button{flex:1}
-.delete{background:#ffeded;color:#a32b2b}
-footer{text-align:center;padding:20px;color:#6b7788;font-size:12px}
-@media(max-width:380px){.grid{grid-template-columns:1fr}}
-</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b2d50">
+  <title>KUZEY QUAI</title>
+
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="icon" sizes="512x512" type="image/png" href="./icon-512.png">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #f1f4f8;
+      color: #182337;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background: #17243a;
+      color: white;
+      padding: 22px 16px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 25px;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      margin: 7px 0 0;
+      color: #c8d6e9;
+    }
+
+    main {
+      max-width: 700px;
+      margin: auto;
+      padding: 15px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 17px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 9px #0000000c;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin: 0 0 15px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      margin: 12px 0 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccd4df;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .primary {
+      background: #17243a;
+      color: white;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .secondary {
+      background: #e7edf5;
+      color: #17243a;
+    }
+
+    .item {
+      border: 1px solid #dce3ed;
+      border-radius: 10px;
+      padding: 13px;
+      margin-top: 10px;
+    }
+
+    .item strong { font-size: 16px; }
+
+    .item p {
+      margin: 6px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .status {
+      font-weight: bold;
+      color: #b36b00;
+    }
+
+    .empty {
+      text-align: center;
+      color: #68768a;
+      padding: 15px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .actions button { flex: 1; }
+
+    .delete {
+      background: #ffeded;
+      color: #a32b2b;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #6b7788;
+      font-size: 12px;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #f1f4f8;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 380px;
+      background: white;
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px #0002;
+    }
+
+    .auth-card h2 {
+      text-align: center;
+      color: #0b2d50;
+      margin-top: 0;
+    }
+
+    .auth-card p.intro {
+      text-align: center;
+      color: #555;
+    }
+
+    .auth-button {
+      width: 100%;
+      padding: 12px;
+      background: #0b2d50;
+      color: white;
+      border-radius: 6px;
+      margin-top: 12px;
+    }
+
+    .forgot-button {
+      display: block;
+      margin: 16px auto 0;
+      padding: 5px;
+      background: none;
+      color: #0b2d50;
+      text-decoration: underline;
+      font-size: 14px;
+    }
+
+    .message {
+      color: #b00020;
+      overflow-wrap: anywhere;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    @media(max-width: 380px) {
+      .grid { grid-template-columns: 1fr; }
+      .auth-card { padding: 22px; }
+    }
+  </style>
 </head>
+
 <body>
+
 <header>
-<img src="./icon-192.png" alt="Logo KUZEY QUAI" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto 12px;">
-<h1>KUZEY QUAI</h1>
-<p>Gestion des rendez-vous transport</p>
+  <img
+    src="./icon-192.png"
+    alt="Logo KUZEY QUAI"
+    style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto 12px;"
+  >
+  <h1>KUZEY QUAI</h1>
+  <p>Gestion des rendez-vous transport</p>
 </header>
+
 <main>
-<section class="card">
-<h2>＋ Nouveau rendez-vous</h2>
-<form id="bookingForm">
-<div class="grid">
-<div><label for="date">Date</label><input id="date" type="date" required></div>
-<div><label for="time">Heure</label><input id="time" type="time" required></div>
-</div>
-<label for="customer">Client</label>
-<input id="customer" required placeholder="Nom du client">
-<label for="carrier">Transporteur</label>
-<input id="carrier" placeholder="Nom du transporteur">
-<div class="grid">
-<div><label for="plate">Immatriculation</label><input id="plate" placeholder="AB-123-CD"></div>
-<div><label for="pallets">Nombre de palettes</label><input id="pallets" type="number" min="0" value="0" required></div>
-</div>
-<label for="quai">Quai</label>
-<select id="quai">
-<option>Quai 1</option><option>Quai 2</option>
-<option>Quai 3</option><option>Quai 4</option>
-<option>Quai 5</option>
-</select>
-<label for="status">Statut</label>
-<select id="status">
-<option>Prévu</option><option>Arrivé</option>
-<option>En chargement</option><option>Terminé</option>
-<option>Annulé</option>
-</select>
-<label for="notes">Notes</label>
-<textarea id="notes" rows="2" placeholder="Informations complémentaires"></textarea>
-<button class="primary" type="submit">Enregistrer le rendez-vous</button>
-</form>
-</section>
-<section class="card">
-<h2>Liste des rendez-vous</h2>
-<input id="search" placeholder="Rechercher un client, une plaque..." style="margin-bottom:10px">
-<div class="grid">
-<div><label for="filterDate">Filtrer par date</label><input id="filterDate" type="date"></div>
-<div><label for="filterQuai">Filtrer par quai</label>
-<select id="filterQuai"><option value="">Tous les quais</option>
-<option>Quai 1</option><option>Quai 2</option><option>Quai 3</option><option>Quai 4</option><option>Quai 5</option>
-</select></div>
-</div>
-<div id="list"></div>
-<button class="secondary" id="export" type="button" style="width:100%;margin-top:12px">Exporter en CSV</button>
-</section>
+  <section class="card">
+    <h2>＋ Nouveau rendez-vous</h2>
+
+    <form id="bookingForm">
+      <div class="grid">
+        <div>
+          <label for="date">Date</label>
+          <input id="date" type="date" required>
+        </div>
+        <div>
+          <label for="time">Heure</label>
+          <input id="time" type="time" required>
+        </div>
+      </div>
+
+      <label for="customer">Client</label>
+      <input id="customer" required placeholder="Nom du client">
+
+      <label for="carrier">Transporteur</label>
+      <input id="carrier" placeholder="Nom du transporteur">
+
+      <div class="grid">
+        <div>
+          <label for="plate">Immatriculation</label>
+          <input id="plate" placeholder="AB-123-CD">
+        </div>
+        <div>
+          <label for="pallets">Nombre de palettes</label>
+          <input id="pallets" type="number" min="0" value="0" required>
+        </div>
+      </div>
+
+      <label for="quai">Quai</label>
+      <select id="quai">
+        <option>Quai 1</option>
+        <option>Quai 2</option>
+        <option>Quai 3</option>
+        <option>Quai 4</option>
+        <option>Quai 5</option>
+      </select>
+
+      <label for="status">Statut</label>
+      <select id="status">
+        <option>Prévu</option>
+        <option>Arrivé</option>
+        <option>En chargement</option>
+        <option>Terminé</option>
+        <option>Annulé</option>
+      </select>
+
+      <label for="notes">Notes</label>
+      <textarea id="notes" rows="2" placeholder="Informations complémentaires"></textarea>
+
+      <button class="primary" type="submit">
+        Enregistrer le rendez-vous
+      </button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Liste des rendez-vous</h2>
+
+    <input
+      id="search"
+      placeholder="Rechercher un client, une plaque..."
+      style="margin-bottom:10px;"
+    >
+
+    <div class="grid">
+      <div>
+        <label for="filterDate">Filtrer par date</label>
+        <input id="filterDate" type="date">
+      </div>
+
+      <div>
+        <label for="filterQuai">Filtrer par quai</label>
+        <select id="filterQuai">
+          <option value="">Tous les quais</option>
+          <option>Quai 1</option>
+          <option>Quai 2</option>
+          <option>Quai 3</option>
+          <option>Quai 4</option>
+          <option>Quai 5</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="list"></div>
+
+    <button
+      class="secondary"
+      id="export"
+      type="button"
+      style="width:100%;margin-top:12px;"
+    >
+      Exporter en CSV
+    </button>
+  </section>
 </main>
+
 <footer>KUZEY QUAI · Gestion logistique</footer>
-<script>
-const SUPABASE_URL = "https://vlrygdrzwnjxkbarjcun.supabase.co";
-const SUPABASE_KEY = "sb_publishable_RG-WBKfSxNk7oKr0DircGQ_d1TRwIQb";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-window.supabaseClient = supabaseClient;
-const $=id=>document.getElementById(id);
-const KEY="kuzey-quai-bookings-v1";
-let bookings=[];
-try{bookings=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){bookings=[]}
-$("date").value=new Date().toLocaleDateString("en-CA");
-function save(){localStorage.setItem(KEY,JSON.stringify(bookings));render()}
-$("bookingForm").addEventListener("submit",e=>{
-e.preventDefault();
-bookings.push({
-id:Date.now(),date:$("date").value,time:$("time").value,
-customer:$("customer").value.trim(),carrier:$("carrier").value.trim(),
-plate:$("plate").value.trim(),pallets:$("pallets").value,
-quai:$("quai").value,status:$("status").value,notes:$("notes").value.trim()
-});
-const b=bookings[bookings.length-1];
-window.supabaseClient.from("rendez_vous").insert({
-  date:b.date,
-  time:b.time,
-  customer:b.customer,
-  carrier:b.carrier,
-  plate:b.plate,
-  palettes:Number(b.pallets),
-  quai:b.quai,
-  status:b.status,
-  notes:b.notes
-}).then(({error})=>{
-  if(error) alert("Erreur Supabase : "+error.message);
-});
-save();
-e.target.reset();
-$("date").value=new Date().toLocaleDateString("en-CA");
-$("pallets").value=0;
-});
-function render(){
-const q=$("search").value.toLowerCase();
-const d=$("filterDate").value, quai=$("filterQuai").value;
-const items=bookings.filter(b=>
-(b.customer+" "+b.carrier+" "+b.plate).toLowerCase().includes(q)&&
-(!d||b.date===d)&&(!quai||b.quai===quai)
-).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
-$("list").innerHTML="";
-if(!items.length){$("list").innerHTML='<div class="empty">Aucun rendez-vous pour le moment.</div>';return}
-items.forEach(b=>{
-const el=document.createElement("div");el.className="item";
-const title=document.createElement("strong");title.textContent=b.customer;
-const info=document.createElement("p");
-info.textContent=b.date+" à "+b.time+" · "+b.quai+" · "+b.pallets+" palettes";
-const extra=document.createElement("p");
-extra.textContent="Transporteur : "+(b.carrier||"—")+" | Plaque : "+(b.plate||"—");
-const st=document.createElement("p");st.className="status";st.textContent=b.status;
-el.append(title,info,extra,st);
-if(b.notes){const n=document.createElement("p");n.textContent="Note : "+b.notes;el.append(n)}
-const actions=document.createElement("div");actions.className="actions";
-const edit=document.createElement("button");edit.className="secondary";edit.textContent="Modifier";
-edit.onclick=()=>{
-$("date").value=b.date;$("time").value=b.time;$("customer").value=b.customer;
-$("carrier").value=b.carrier;$("plate").value=b.plate;$("pallets").value=b.pallets;
-$("quai").value=b.quai;$("status").value=b.status;$("notes").value=b.notes;
-bookings=bookings.filter(x=>x.id!==b.id);save();
-window.scrollTo({top:0,behavior:"smooth"});
-};
-const del=document.createElement("button");del.className="delete";del.textContent="Supprimer";
-del.onclick=()=>{if(confirm("Supprimer ce rendez-vous ?")){bookings=bookings.filter(x=>x.id!==b.id);save()}};
-actions.append(edit,del);el.append(actions);$("list").append(el);
-});
-}
-["search","filterDate","filterQuai"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",render));
-$("export").onclick=()=>{
-const cols=["date","time","customer","carrier","plate","pallets","quai","status","notes"];
-const csv=[cols.join(";"),...bookings.map(b=>cols.map(k=>'"'+String(b[k]??"").replace(/"/g,'""')+'"').join(";"))].join("\r\n");
-const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
-const url=URL.createObjectURL(blob),a=document.createElement("a");
-a.href=url;a.download="kuzey-quai-rendez-vous.csv";a.click();URL.revokeObjectURL(url);
-};
-render();
-</script>
-  <div id="loginPanel" style="position:fixed;inset:0;z-index:99999;background:#0b2d50;display:flex;align-items:center;justify-content:center;padding:24px;">
-  <form id="loginForm" style="background:white;padding:24px;border-radius:16px;width:100%;max-width:360px;box-sizing:border-box;font-family:Arial,sans-serif;">
-    <h2 style="color:#0b2d50;text-align:center;">KUZEY QUAI</h2>
-    <p style="text-align:center;">Connexion</p>
+
+<!-- ECRAN DE CONNEXION -->
+<div id="loginPanel" class="overlay">
+  <form id="loginForm" class="auth-card">
+    <h2>KUZEY QUAI</h2>
+    <p class="intro">Gestion des rendez-vous transport</p>
+
     <label for="loginEmail">Adresse e-mail</label>
-    <input id="loginEmail" type="email" required autocomplete="username" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;">
+    <input
+      id="loginEmail"
+      type="email"
+      required
+      autocomplete="username"
+    >
+
     <label for="loginPassword">Mot de passe</label>
-    <input id="loginPassword" type="password" required autocomplete="current-password" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;">
-    <button id="loginButton" type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:8px;">Se connecter</button>
-    <p id="loginMessage" style="color:#b00020;"></p>
-  </form>
-</div>
-<script>
-(async function(){
-  const panel=document.getElementById("loginPanel");
-  const form=document.getElementById("loginForm");
-  const message=document.getElementById("loginMessage");
-  const button=document.getElementById("loginButton");
+    <input
+      id="loginPassword"
+      type="password"
+      required
+      autocomplete="current-password"
+    >
 
-  const {data,error}=await window.supabaseClient.auth.getSession();
-  if(!error && data.session) panel.style.display="none";
+    <button id="loginButton" class="auth-button" type="submit">
+      Se connecter
+    </button>
 
-  form.addEventListener("submit",async function(e){
-    e.preventDefault();
-    button.disabled=true;
-    button.textContent="Connexion...";
-    message.textContent="";
-   const {error}=await window.supabaseClient.auth.signInWithPassword({
-      email:document.getElementById("loginEmail").value.trim(),
-      password:document.getElementById("loginPassword").value
-    });
-    button.disabled=false;
-    button.textContent="Se connecter";
-    if(error){
-      message.textContent="Échec de connexion. Vérifiez l’e-mail et le mot de passe.";
-    }else{
-      panel.style.display="none";
-    }
-  });
-})();
+    <button id="forgotPasswordButton" class="forgot-button" type="button">
+      Mot de passe oublié ?
+    </button>
 
-<script>
-(async function(){
-  const supabase = window.supabaseClient;
-  const panel = document.getElementById("passwordResetPanel");
-  const form = document.getElementById("passwordResetForm");
-  const message = document.getElementById("resetMessage");
-  const loginPanel = document.getElementById("loginPanel");
-
-  function showResetPanel(){
-    panel.style.display = "flex";
-    loginPanel.style.display = "none";
-  }
-
-  const hash = new URLSearchParams(location.hash.slice(1));
-  const query = new URLSearchParams(location.search);
-
-  if (
-    hash.get("type") === "recovery" ||
-    query.get("type") === "recovery"
-  ) {
-    showResetPanel();
-  }
-
-  supabase.auth.onAuthStateChange(function(event){
-    if(event === "PASSWORD_RECOVERY"){
-      showResetPanel();
-    }
-
-<div id="loginPanel" style="position:fixed;inset:0;z-index:9999;background:#f1f4f8;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
-  <form id="loginForm" style="width:100%;max-width:380px;background:white;padding:28px;border-radius:14px;box-shadow:0 4px 20px #0002;box-sizing:border-box;">
-    <h2 style="text-align:center;color:#0b2d50;margin-top:0;">KUZEY QUAI</h2>
-    <p style="text-align:center;color:#555;">Gestion des rendez-vous transport</p>
-    <label for="loginEmail">Adresse e-mail</label>
-    <input id="loginEmail" type="email" required autocomplete="username" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border:1px solid #bbb;border-radius:6px;">
-    <label for="loginPassword">Mot de passe</label>
-    <input id="loginPassword" type="password" required autocomplete="current-password" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border:1px solid #bbb;border-radius:6px;">
-    <button id="loginButton" type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:6px;font-size:16px;">Se connecter</button>
-    <button id="forgotPasswordButton" type="button" style="display:block;margin:16px auto 0;background:none;border:0;color:#0b2d50;text-decoration:underline;font-size:14px;">Mot de passe oublié ?</button>
-    <p id="loginMessage" role="status" style="color:#b42318;overflow-wrap:anywhere;"></p>
+    <p id="loginMessage" class="message" role="status"></p>
   </form>
 </div>
 
-<div id="passwordResetPanel" style="position:fixed;inset:0;z-index:10000;background:#f1f4f8;display:none;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
-  <form id="passwordResetForm" style="width:100%;max-width:380px;background:white;padding:28px;border-radius:14px;box-shadow:0 4px 20px #0002;box-sizing:border-box;">
-    <h2 style="text-align:center;color:#0b2d50;margin-top:0;">KUZEY QUAI</h2>
+<!-- ECRAN DE REINITIALISATION DU MOT DE PASSE -->
+<div id="passwordResetPanel" class="overlay">
+  <form id="passwordResetForm" class="auth-card">
+    <h2>KUZEY QUAI</h2>
     <h3>Créer un nouveau mot de passe</h3>
-    <label for="newPassword">Nouveau mot de passe (8 caractères minimum)</label>
-    <input id="newPassword" type="password" required minlength="8" autocomplete="new-password" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border:1px solid #bbb;border-radius:6px;">
-    <button type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:6px;font-size:16px;">Enregistrer le nouveau mot de passe</button>
-    <p id="resetMessage" role="status" style="overflow-wrap:anywhere;"></p>
+
+    <label for="newPassword">
+      Nouveau mot de passe (8 caractères minimum)
+    </label>
+
+    <input
+      id="newPassword"
+      type="password"
+      required
+      minlength="8"
+      autocomplete="new-password"
+    >
+
+    <button id="savePasswordButton" class="auth-button" type="submit">
+      Enregistrer le nouveau mot de passe
+    </button>
+
+    <p id="resetMessage" class="message" role="status"></p>
   </form>
 </div>
 
 <script>
 (function () {
-  const client = window.supabaseClient;
-  const loginPanel = document.getElementById("loginPanel");
-  const loginForm = document.getElementById("loginForm");
-  const loginButton = document.getElementById("loginButton");
-  const loginMessage = document.getElementById("loginMessage");
-  const forgotButton = document.getElementById("forgotPasswordButton");
-  const resetPanel = document.getElementById("passwordResetPanel");
-  const resetForm = document.getElementById("passwordResetForm");
-  const resetMessage = document.getElementById("resetMessage");
+  "use strict";
 
-  if (!client) {
-    loginMessage.textContent = "Erreur de connexion au service. Rechargez la page.";
-    return;
-  }
+  const SUPABASE_URL = "https://vlrygdrzwnjxkbarjcun.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_RG-WBKfSxNk7oKr0DircGQ_d1TRwIQb";
 
-  function showResetPanel() {
-    resetPanel.style.display = "flex";
-    loginPanel.style.display = "none";
-  }
+  const $ = function (id) {
+    return document.getElementById(id);
+  };
 
-  function showLoginPanel(message) {
-    resetPanel.style.display = "none";
-    loginPanel.style.display = "flex";
-    loginMessage.textContent = message || "";
-  }
-<div id="loginPanel" style="position:fixed;inset:0;z-index:99999;background:#0b2d50;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
-  <form id="loginForm" style="width:100%;max-width:380px;background:white;padding:28px;border-radius:14px;box-sizing:border-box;font-family:Arial,sans-serif;">
-    <h2 style="text-align:center;color:#0b2d50;">KUZEY QUAI</h2>
-    <p style="text-align:center;">Gestion des rendez-vous transport</p>
+  const loginPanel = $("loginPanel");
+  const loginForm = $("loginForm");
+  const loginButton = $("loginButton");
+  const loginMessage = $("loginMessage");
+  const forgotButton = $("forgotPasswordButton");
 
-    <label for="loginEmail">Adresse e-mail</label>
-    <input id="loginEmail" type="email" required autocomplete="username" style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;border:1px solid #bbb;border-radius:6px;">
+  const resetPanel = $("passwordResetPanel");
+  const resetForm = $("passwordResetForm");
+  const resetMessage = $("resetMessage");
+  const savePasswordButton = $("savePasswordButton");
 
-    <label for="loginPassword">Mot de passe</label>
-    <input id="loginPassword" type="password" required autocomplete="current-password" style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;border:1px solid #bbb;border-radius:6px;">
+  let client = null;
 
-    <button id="loginButton" type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:6px;">Se connecter</button>
-
-    <button id="forgotPasswordButton" type="button" style="display:block;margin:16px auto 0;background:none;border:0;color:#0b2d50;text-decoration:underline;font-size:14px;">Mot de passe oublié ?</button>
-
-    <p id="loginMessage" role="status" style="color:#b00020;overflow-wrap:anywhere;"></p>
-  </form>
-</div>
-
-<div id="passwordResetPanel" style="position:fixed;inset:0;z-index:100000;background:#f1f4f8;display:none;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
-  <form id="passwordResetForm" style="width:100%;max-width:380px;background:white;padding:28px;border-radius:14px;box-sizing:border-box;font-family:Arial,sans-serif;">
-    <h2 style="text-align:center;color:#0b2d50;">KUZEY QUAI</h2>
-    <h3>Créer un nouveau mot de passe</h3>
-
-    <label for="newPassword">Nouveau mot de passe (8 caractères minimum)</label>
-    <input id="newPassword" type="password" required minlength="8" autocomplete="new-password" style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;border:1px solid #bbb;border-radius:6px;">
-
-    <button type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:6px;">Enregistrer le nouveau mot de passe</button>
-
-    <p id="resetMessage" role="status" style="overflow-wrap:anywhere;"></p>
-  </form>
-</div>
-
-<script>
-(function () {
-  const client = window.supabaseClient;
-
-  const loginPanel = document.getElementById("loginPanel");
-  const loginForm = document.getElementById("loginForm");
-  const loginButton = document.getElementById("loginButton");
-  const loginMessage = document.getElementById("loginMessage");
-  const forgotButton = document.getElementById("forgotPasswordButton");
-
-  const resetPanel = document.getElementById("passwordResetPanel");
-  const resetForm = document.getElementById("passwordResetForm");
-  const resetMessage = document.getElementById("resetMessage");
-
-  if (!client || !client.auth) {
-    loginMessage.textContent =
-      "Erreur de connexion au service. Rechargez la page.";
-    return;
-  }
-
-  function showResetPanel() {
-    loginPanel.style.display = "none";
-    resetPanel.style.display = "flex";
-  }
-
-  function showLoginPanel(message) {
+  function showLogin(message) {
     resetPanel.style.display = "none";
     loginPanel.style.display = "flex";
     loginMessage.textContent = message || "";
   }
 
-  const hashParams = new URLSearchParams(
-    window.location.hash.substring(1)
-  );
-  const queryParams = new URLSearchParams(
-    window.location.search
-  );
-
-  const isRecovery =
-    hashParams.get("type") === "recovery" ||
-    queryParams.get("type") === "recovery";
-
-  if (isRecovery) {
-    showResetPanel();
+  function showReset(message) {
+    loginPanel.style.display = "none";
+    resetPanel.style.display = "flex";
+    resetMessage.textContent = message || "";
   }
 
-  client.auth.onAuthStateChange(function (event, session) {
-    if (event === "PASSWORD_RECOVERY") {
-      showResetPanel();
+  function hideAuthPanels() {
+    loginPanel.style.display = "none";
+    resetPanel.style.display = "none";
+  }
+
+  function isRecoveryLink() {
+    const hash = new URLSearchParams(
+      window.location.hash.substring(1)
+    );
+    const query = new URLSearchParams(
+      window.location.search
+    );
+
+    return (
+      hash.get("type") === "recovery" ||
+      query.get("type") === "recovery"
+    );
+  }
+
+  try {
+    if (!window.supabase || !window.supabase.createClient) {
+      throw new Error("Le service de connexion n'est pas disponible.");
     }
 
-    if (event === "SIGNED_IN" && session && !isRecovery) {
-      loginPanel.style.display = "none";
-      resetPanel.style.display = "none";
-    }
-  });
+    client = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
+    window.supabaseClient = client;
+  } catch (error) {
+    showLogin("Erreur de connexion au service. Rechargez la page.");
+    console.error(error);
+    return;
+  }
+
+  // Afficher le bon écran lors de l'ouverture de l'application.
+  if (isRecoveryLink()) {
+    showReset();
+  } else {
+    showLogin();
+  }
+
+  // Vérifier si l'utilisateur possède déjà une session.
   client.auth.getSession().then(function (result) {
-    if (result.error) return;
-
-    if (result.data.session && !isRecovery) {
-      loginPanel.style.display = "none";
+    if (result.error) {
+      console.error(result.error);
+      return;
     }
+
+    if (isRecoveryLink()) {
+      showReset();
+    } else if (result.data.session) {
+      hideAuthPanels();
+    } else {
+      showLogin();
+    }
+  }).catch(function (error) {
+    console.error(error);
   });
 
-  loginForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
-<div id="loginPanel" style="position:fixed;inset:0;z-index:99999;background:#0b2d50;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
-  <form id="loginForm" style="width:100%;max-width:380px;background:white;padding:28px;border-radius:14px;box-sizing:border-box;font-family:Arial,sans-serif;">
-    <h2 style="text-align:center;color:#0b2d50;">KUZEY QUAI</h2>
-    <p style="text-align:center;">Gestion des rendez-vous transport</p>
-
-    <label for="loginEmail">Adresse e-mail</label>
-    <input id="loginEmail" type="email" required autocomplete="username" style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;border:1px solid #bbb;border-radius:6px;">
-
-    <label for="loginPassword">Mot de passe</label>
-    <input id="loginPassword" type="password" required autocomplete="current-password" style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;border:1px solid #bbb;border-radius:6px;">
-
-    <button id="loginButton" type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:6px;">Se connecter</button>
-
-    <button id="forgotPasswordButton" type="button" style="display:block;margin:16px auto 0;background:none;border:0;color:#0b2d50;text-decoration:underline;font-size:14px;">Mot de passe oublié ?</button>
-
-    <p id="loginMessage" role="status" style="color:#b00020;overflow-wrap:anywhere;"></p>
-  </form>
-</div>
-
-<div id="passwordResetPanel" style="position:fixed;inset:0;z-index:100000;background:#f1f4f8;display:none;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
-  <form id="passwordResetForm" style="width:100%;max-width:380px;background:white;padding:28px;border-radius:14px;box-sizing:border-box;font-family:Arial,sans-serif;">
-    <h2 style="text-align:center;color:#0b2d50;">KUZEY QUAI</h2>
-    <h3>Créer un nouveau mot de passe</h3>
-
-    <label for="newPassword">Nouveau mot de passe (8 caractères minimum)</label>
-    <input id="newPassword" type="password" required minlength="8" autocomplete="new-password" style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;border:1px solid #bbb;border-radius:6px;">
-
-    <button type="submit" style="width:100%;padding:12px;background:#0b2d50;color:white;border:0;border-radius:6px;">Enregistrer le nouveau mot de passe</button>
-
-    <p id="resetMessage" role="status" style="overflow-wrap:anywhere;"></p>
-  </form>
-</div>
-
-<script>
-(function () {
-  const client = window.supabaseClient;
-
-  const loginPanel = document.getElementById("loginPanel");
-  const loginForm = document.getElementById("loginForm");
-  const loginButton = document.getElementById("loginButton");
-  const loginMessage = document.getElementById("loginMessage");
-  const forgotButton = document.getElementById("forgotPasswordButton");
-
-  const resetPanel = document.getElementById("passwordResetPanel");
-  const resetForm = document.getElementById("passwordResetForm");
-  const resetMessage = document.getElementById("resetMessage");
-
-  if (!client || !client.auth) {
-    loginMessage.textContent =
-      "Erreur de connexion au service. Rechargez la page.";
-    return;
-  }
-
-  function showResetPanel() {
-    loginPanel.style.display = "none";
-    resetPanel.style.display = "flex";
-  }
-
-  function showLoginPanel(message) {
-    resetPanel.style.display = "none";
-    loginPanel.style.display = "flex";
-    loginMessage.textContent = message || "";
-  }
-
-  const hashParams = new URLSearchParams(
-    window.location.hash.substring(1)
-  );
-  const queryParams = new URLSearchParams(
-    window.location.search
-  );
-
-  const isRecovery =
-    hashParams.get("type") === "recovery" ||
-    queryParams.get("type") === "recovery";
-
-  if (isRecovery) {
-    showResetPanel();
-  }
-
-  client.auth.onAuthStateChange(function (event, session) {
+  // Détecter le lien de récupération envoyé par e-mail.
+  client.auth.onAuthStateChange(function (event) {
     if (event === "PASSWORD_RECOVERY") {
-      showResetPanel();
-    }
-
-    if (event === "SIGNED_IN" && session && !isRecovery) {
-      loginPanel.style.display = "none";
-      resetPanel.style.display = "none";
+      showReset();
+    } else if (event === "SIGNED_OUT") {
+      showLogin();
     }
   });
 
-  client.auth.getSession().then(function (result) {
-    if (result.error) return;
-
-    if (result.data.session && !isRecovery) {
-      loginPanel.style.display = "none";
-    }
-  });
-
+  // CONNEXION
   loginForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
@@ -502,16 +511,15 @@ render();
 
     try {
       const result = await client.auth.signInWithPassword({
-        email: document.getElementById("loginEmail").value.trim(),
-        password: document.getElementById("loginPassword").value
+        email: $("loginEmail").value.trim(),
+        password: $("loginPassword").value
       });
 
       if (result.error) {
         loginMessage.textContent =
           "Échec de connexion. Vérifiez l’e-mail et le mot de passe.";
       } else {
-        loginPanel.style.display = "none";
-        resetPanel.style.display = "none";
+        hideAuthPanels();
       }
     } catch (error) {
       loginMessage.textContent = "Erreur : " + error.message;
@@ -521,13 +529,14 @@ render();
     }
   });
 
+  // DEMANDE DE REINITIALISATION PAR E-MAIL
   forgotButton.addEventListener("click", async function () {
-    const email = document.getElementById("loginEmail").value.trim();
+    const email = $("loginEmail").value.trim();
 
     if (!email) {
       loginMessage.textContent =
         "Saisissez d'abord votre adresse e-mail.";
-      document.getElementById("loginEmail").focus();
+      $("loginEmail").focus();
       return;
     }
 
@@ -543,7 +552,7 @@ render();
         loginMessage.textContent = "Erreur : " + result.error.message;
       } else {
         loginMessage.textContent =
-          "Si cette adresse est enregistrée, un e-mail de réinitialisation sera envoyé. Vérifiez aussi vos courriers indésirables.";
+          "Demande envoyée. Vérifiez votre boîte e-mail et vos courriers indésirables.";
       }
     } catch (error) {
       loginMessage.textContent = "Erreur : " + error.message;
@@ -552,14 +561,21 @@ render();
     }
   });
 
+  // ENREGISTRER LE NOUVEAU MOT DE PASSE
   resetForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const password = document.getElementById("newPassword").value;
-    const saveButton = resetForm.querySelector('button[type="submit"]');
+    const password = $("newPassword").value;
 
-    saveButton.disabled = true;
-    resetMessage.textContent = "Enregistrement en cours...";
+    if (password.length < 8) {
+      resetMessage.textContent =
+        "Le mot de passe doit contenir au moins 8 caractères.";
+      return;
+    }
+
+    savePasswordButton.disabled = true;
+    savePasswordButton.textContent = "Enregistrement...";
+    resetMessage.textContent = "";
 
     try {
       const result = await client.auth.updateUser({
@@ -579,16 +595,232 @@ render();
         window.location.pathname
       );
 
-      showLoginPanel(
+      resetForm.reset();
+
+      showLogin(
         "Mot de passe modifié. Connectez-vous avec votre nouveau mot de passe."
       );
     } catch (error) {
       resetMessage.textContent = "Erreur : " + error.message;
     } finally {
-      saveButton.disabled = false;
+      savePasswordButton.disabled = false;
+      savePasswordButton.textContent = "Enregistrer le nouveau mot de passe";
     }
   });
+
+  // APPLICATION DES RENDEZ-VOUS
+  const KEY = "kuzey-quai-bookings-v1";
+  let bookings = [];
+
+  try {
+    bookings = JSON.parse(localStorage.getItem(KEY) || "[]");
+    if (!Array.isArray(bookings)) bookings = [];
+  } catch (error) {
+    bookings = [];
+  }
+
+  function today() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return year + "-" + month + "-" + day;
+  }
+
+  $("date").value = today();
+
+  function save() {
+    localStorage.setItem(KEY, JSON.stringify(bookings));
+    render();
+  }
+
+  // CREER UN RENDEZ-VOUS
+  $("bookingForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const booking = {
+      id: Date.now(),
+      date: $("date").value,
+      time: $("time").value,
+      customer: $("customer").value.trim(),
+      carrier: $("carrier").value.trim(),
+      plate: $("plate").value.trim(),
+      pallets: $("pallets").value,
+      quai: $("quai").value,
+      status: $("status").value,
+      notes: $("notes").value.trim()
+    };
+
+    bookings.push(booking);
+    save();
+
+    try {
+      const result = await client.from("rendez_vous").insert({
+        date: booking.date,
+        time: booking.time,
+        customer: booking.customer,
+        carrier: booking.carrier,
+        plate: booking.plate,
+        palettes: Number(booking.pallets),
+        quai: booking.quai,
+        status: booking.status,
+        notes: booking.notes
+      });
+
+      if (result.error) {
+        alert("Erreur Supabase : " + result.error.message);
+      }
+    } catch (error) {
+      alert("Erreur de connexion : " + error.message);
+    }
+
+    event.target.reset();
+    $("date").value = today();
+    $("pallets").value = 0;
+  });
+
+  // AFFICHER LA LISTE
+  function render() {
+    const q = $("search").value.toLowerCase();
+    const dateFilter = $("filterDate").value;
+    const quaiFilter = $("filterQuai").value;
+
+    const items = bookings.filter(function (booking) {
+      return (
+        (
+          (booking.customer || "") + " " +
+          (booking.carrier || "") + " " +
+          (booking.plate || "")
+        ).toLowerCase().includes(q) &&
+        (!dateFilter || booking.date === dateFilter) &&
+        (!quaiFilter || booking.quai === quaiFilter)
+      );
+    }).sort(function (a, b) {
+      return (a.date + a.time).localeCompare(b.date + b.time);
+    });
+
+    $("list").innerHTML = "";
+
+    if (!items.length) {
+      $("list").innerHTML =
+        '<div class="empty">Aucun rendez-vous pour le moment.</div>';
+      return;
+    }
+
+    items.forEach(function (booking) {
+      const el = document.createElement("div");
+      el.className = "item";
+
+      const title = document.createElement("strong");
+      title.textContent = booking.customer;
+
+      const info = document.createElement("p");
+      info.textContent =
+        booking.date + " à " + booking.time + " · " +
+        booking.quai + " · " + booking.pallets + " palettes";
+
+      const extra = document.createElement("p");
+      extra.textContent =
+        "Transporteur : " + (booking.carrier || "—") +
+        " | Plaque : " + (booking.plate || "—");
+
+      const status = document.createElement("p");
+      status.className = "status";
+      status.textContent = booking.status;
+
+      el.append(title, info, extra, status);
+
+      if (booking.notes) {
+        const note = document.createElement("p");
+        note.textContent = "Note : " + booking.notes;
+        el.append(note);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "actions";
+
+      const edit = document.createElement("button");
+      edit.className = "secondary";
+      edit.textContent = "Modifier";
+
+      edit.onclick = function () {
+        $("date").value = booking.date;
+        $("time").value = booking.time;
+        $("customer").value = booking.customer;
+        $("carrier").value = booking.carrier || "";
+        $("plate").value = booking.plate || "";
+        $("pallets").value = booking.pallets;
+        $("quai").value = booking.quai;
+        $("status").value = booking.status;
+        $("notes").value = booking.notes || "";
+
+        bookings = bookings.filter(function (item) {
+          return item.id !== booking.id;
+        });
+
+        save();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+
+      const del = document.createElement("button");
+      del.className = "delete";
+      del.textContent = "Supprimer";
+
+      del.onclick = function () {
+        if (confirm("Supprimer ce rendez-vous ?")) {
+          bookings = bookings.filter(function (item) {
+            return item.id !== booking.id;
+          });
+          save();
+        }
+      };
+
+      actions.append(edit, del);
+      el.append(actions);
+      $("list").append(el);
+    });
+  }
+
+  ["search", "filterDate", "filterQuai"].forEach(function (id) {
+    $(id).addEventListener(
+      id === "search" ? "input" : "change",
+      render
+    );
+  });
+
+  // EXPORTER EN CSV
+  $("export").onclick = function () {
+    const cols = [
+      "date", "time", "customer", "carrier", "plate",
+      "pallets", "quai", "status", "notes"
+    ];
+
+    const csv = [
+      cols.join(";"),
+      ...bookings.map(function (booking) {
+        return cols.map(function (key) {
+          return '"' + String(booking[key] ?? "").replace(/"/g, '""') + '"';
+        }).join(";");
+      })
+    ].join("\r\n");
+
+    const blob = new Blob(["\uFEFF" + csv], {
+      type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "kuzey-quai-rendez-vous.csv";
+    link.click();
+
+    URL.revokeObjectURL(url);
+  };
+
+  render();
 })();
 </script>
+
 </body>
 </html>
