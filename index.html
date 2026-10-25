@@ -806,11 +806,26 @@
       del.className = "delete";
       del.textContent = "Supprimer";
 
-      del.onclick = function () {
-        if (confirm("Supprimer ce rendez-vous ?")) {
-          editingBookingId = booking.id;
-        }
-      };
+      
+del.onclick = async function () {
+  if (confirm("Supprimer ce rendez-vous ?")) {
+    const result = await client
+      .from("rendez_vous")
+      .delete()
+      .eq("id", booking.id);
+
+    if (result.error) {
+      alert("Erreur de suppression : " + result.error.message);
+      return;
+    }
+
+    bookings = bookings.filter(function (item) {
+      return String(item.id) !== String(booking.id);
+    });
+
+    save();
+  }
+};
 
       actions.append(edit, del);
       el.append(actions);
