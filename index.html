@@ -817,7 +817,33 @@
 
     URL.revokeObjectURL(url);
   };
+  async function loadBookings() {
+    try {
+      const result = await client
+        .from("rendez_vous")
+        .select("*")
+        .order("date")
+        .order("time");
 
+      if (result.error) {
+        alert("Erreur de chargement : " + result.error.message);
+        return;
+      }
+
+      bookings = (result.data || []).map(function (b) {
+        return {
+          ...b,
+          pallets: b.palettes ?? 0
+        };
+      });
+
+      save();
+    } catch (error) {
+      alert("Erreur : " + error.message);
+    }
+  }
+
+  loadBookings();
   render();
 })();
 </script>
