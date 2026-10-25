@@ -611,7 +611,7 @@
   // APPLICATION DES RENDEZ-VOUS
   const KEY = "kuzey-quai-bookings-v1";
   let bookings = [];
-
+  let editingBookingId = null;
   try {
     bookings = JSON.parse(localStorage.getItem(KEY) || "[]");
     if (!Array.isArray(bookings)) bookings = [];
