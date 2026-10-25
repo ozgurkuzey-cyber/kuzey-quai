@@ -812,7 +812,7 @@ del.onclick = async function () {
     const result = await client
       .from("rendez_vous")
       .delete()
-      .eq("id", booking.id);
+      .eq("id", booking.id).select();
 
     if (result.error) {
       alert("Erreur de suppression : " + result.error.message);
