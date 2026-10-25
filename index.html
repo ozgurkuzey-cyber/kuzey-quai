@@ -771,10 +771,7 @@
 
       del.onclick = function () {
         if (confirm("Supprimer ce rendez-vous ?")) {
-          bookings = bookings.filter(function (item) {
-            return item.id !== booking.id;
-          });
-          save();
+          editingBookingId = booking.id;
         }
       };
 
