@@ -665,7 +665,7 @@
         quai: booking.quai,
         status: booking.status,
         notes: booking.notes
-      });
+            }).select().single();
 
       if (result.error) {
         alert("Erreur Supabase : " + result.error.message);
