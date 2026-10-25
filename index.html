@@ -668,8 +668,11 @@
             }).select().single();
 
       if (result.error) {
-        alert("Erreur Supabase : " + result.error.message);
-      }
+  alert("Erreur Supabase : " + result.error.message);
+} else {
+  booking.id = result.data.id;
+  save();
+}
     } catch (error) {
       alert("Erreur de connexion : " + error.message);
     }
