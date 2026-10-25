@@ -639,7 +639,7 @@
     event.preventDefault();
 
     const booking = {
-      id: Date.now(),
+      id: editingBookingId ?? Date.now(),
       date: $("date").value,
       time: $("time").value,
       customer: $("customer").value.trim(),
