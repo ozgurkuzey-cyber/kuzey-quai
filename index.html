@@ -651,31 +651,68 @@
       notes: $("notes").value.trim()
     };
 
-    bookings.push(booking);
-    save();
-
+    
     try {
-      const result = await client.from("rendez_vous").insert({
-        date: booking.date,
-        time: booking.time,
-        customer: booking.customer,
-        carrier: booking.carrier,
-        plate: booking.plate,
-        pallets: Number(booking.pallets),
-        quai: booking.quai,
-        status: booking.status,
-        notes: booking.notes
-            }).select().single();
+      let result;
+
+      if (editingBookingId !== null) {
+        result = await client
+          .from("rendez_vous")
+          .update({
+            date: booking.date,
+            time: booking.time,
+            customer: booking.customer,
+            carrier: booking.carrier,
+            plate: booking.plate,
+            pallets: Number(booking.pallets),
+            quai: booking.quai,
+            status: booking.status,
+            notes: booking.notes
+          })
+          .eq("id", editingBookingId);
+
+        if (!result.error) {
+          bookings = bookings.map(function (item) {
+            return item.id === editingBookingId
+              ? { ...booking, id: editingBookingId }
+              : item;
+          });
+        }
+      } else {
+        result = await client
+          .from("rendez_vous")
+          .insert({
+            date: booking.date,
+            time: booking.time,
+            customer: booking.customer,
+            carrier: booking.carrier,
+            plate: booking.plate,
+            pallets: Number(booking.pallets),
+            quai: booking.quai,
+            status: booking.status,
+            notes: booking.notes
+          })
+          .select()
+          .single();
+
+        if (!result.error) {
+          booking.id = result.data.id;
+          bookings.push(booking);
+        }
+      }
 
       if (result.error) {
-  alert("Erreur Supabase : " + result.error.message);
-} else {
-  booking.id = result.data.id;
-  save();
-}
+        alert("Erreur Supabase : " + result.error.message);
+      } else {
+        editingBookingId = null;
+        save();
+      }
     } catch (error) {
       alert("Erreur de connexion : " + error.message);
     }
+
+    event.target.reset();
+
 
     event.target.reset();
     $("date").value = today();
